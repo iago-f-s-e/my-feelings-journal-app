@@ -1,6 +1,21 @@
 {
   "extends": "expo/tsconfig.base",
   "compilerOptions": {
-    "strict": true
+    "noEmitOnError": true,
+    "strictNullChecks": true,
+    "strictFunctionTypes": true,
+    "strictPropertyInitialization": true,
+    "alwaysStrict": true,
+    "noUnusedParameters": true,
+    "allowUnusedLabels": true,
+    "allowUnreachableCode": true,
+    "baseUrl": "./",
+    "paths": {
+      "@modules/*": ["./src/modules/*"],
+      "@core/*": ["./src/core/*"],
+      "@shared/*": ["./src/shared/*"]
+    },
+    "emitDecoratorMetadata": true,
+    "experimentalDecorators": true
   }
 }

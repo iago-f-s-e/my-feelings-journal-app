@@ -17,11 +17,14 @@ export default {
       package: 'com.sabbathdev.myfeelingjournal',
       adaptiveIcon: {
         foregroundImage: './assets/adaptive-icon.png',
-        backgroundColor: '#ffffff',
+        backgroundColor: '#F7F3EC',
       },
     },
     web: {
       favicon: './assets/favicon.png',
+    },
+    extra: {
+      apiUrl: 'http://192.168.0.105:8080',
     },
     runtimeVersion: {
       policy: 'sdkVersion',
