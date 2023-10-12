@@ -25,12 +25,15 @@ const colors = {
   veryBad: 'rgb(215, 177, 238)',
   veryBadLight: 'rgba(215, 177, 238, 0.25)',
   veryGood: 'rgb(186, 251, 192)',
+  veryGoodDark: 'rgb(166, 231, 172)',
   veryGoodLight: 'rgba(186, 251, 192, 0.25)',
   normal: 'rgb(255, 221, 193)',
+  normalDark: 'rgb(245, 211, 183)',
   normalLight: 'rgba(255, 221, 193, 0.25)',
   bad: 'rgb(192, 204, 238)',
   badLight: 'rgba(192, 204, 238, 0.25)',
   good: 'rgb(250, 247, 177)',
+  goodDark: 'rgb(240, 237, 167)',
   goodLight: 'rgba(250, 247, 177, 0.25)',
 };
 

@@ -5,23 +5,33 @@ import {FeelingType} from '@shared/types';
 import {getFeelingJournalCurrentWeekQuery} from '@core/http/feeling-journal';
 import {timeHandlingWithLocale} from '@core/time-handling';
 import {todayIndex} from '@core/time-handling/time-handling';
+import {getRandomColor} from '@shared/utils';
 
 type WeekDay = {
   dayIndex: number;
-  isToday: boolean;
   day: string;
   date: number;
   feelingType?: FeelingType;
 };
 
+type SelfCareActivitie = {
+  id: number;
+  description: string;
+  darkColor: string;
+  normalColor: string;
+};
+
 export type Week = Record<string, WeekDay>;
+export type SelfCare = Record<string, SelfCareActivitie[]>;
 
 type UseWeekStore = {
   loading: boolean;
   keys: string[];
   week: Week;
+  selfCare: SelfCare;
   updateCurrentWeek: () => void;
   updateToday: (date: string, feelingType: FeelingType) => void;
+  createSelfCare: (date: string, description: string) => void;
 };
 
 function getWeekDay(dayIndex: number, feelingType?: FeelingType): WeekDay {
@@ -29,7 +39,6 @@ function getWeekDay(dayIndex: number, feelingType?: FeelingType): WeekDay {
 
   return {
     dayIndex,
-    isToday: dayEntity.day() === todayIndex,
     day: dayEntity.format('ddd'),
     date: dayEntity.date(),
     feelingType,
@@ -49,6 +58,15 @@ const initialWeek = weekIndices.reduce<Week>((curr, dayIndex) => {
   return curr;
 }, {});
 
+const initialSelfCare = weekIndices.reduce<SelfCare>((curr, dayIndex) => {
+  const storeKey = timeHandlingWithLocale.day(dayIndex).format('YYYY-MM-DD');
+
+  // eslint-disable-next-line no-param-reassign
+  curr[storeKey] = [];
+
+  return curr;
+}, {});
+
 const initialKeys = Object.keys(initialWeek);
 
 export const useWeekStore = create(
@@ -56,7 +74,26 @@ export const useWeekStore = create(
     set => ({
       keys: initialKeys,
       week: initialWeek,
+      selfCare: initialSelfCare,
       loading: false,
+      createSelfCare: (date: string, description: string) => {
+        const color = getRandomColor();
+
+        set(state => ({
+          selfCare: {
+            ...state.selfCare,
+            [date]: [
+              ...(state.selfCare[date] || []),
+              {
+                id: (state.selfCare[date].length || 0) + 1,
+                darkColor: color.dark,
+                normalColor: color.normal,
+                description,
+              },
+            ],
+          },
+        }));
+      },
       updateToday: (date: string, feelingType: FeelingType) => {
         set(state => ({
           week: {

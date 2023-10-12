@@ -4,6 +4,7 @@ import {theme} from '@shared/styles';
 
 import {today} from '@core/time-handling';
 import {Week} from '@core/store/use-week-store/use-week-store';
+import {todayIndex} from '@core/time-handling/time-handling';
 import {FeelingJournalWeekDay} from './feeling-journal-week-day.component';
 
 type FeelingJournalHeaderProps = {
@@ -23,12 +24,14 @@ export const FeelingJournalHeader = ({
       <View style={styles.weekContainer}>
         {weekKeys.map(key => {
           const weekDay = week[key];
+          const isToday = weekDay.dayIndex === todayIndex;
+
           return (
             <FeelingJournalWeekDay
               key={weekDay.dayIndex.toString()}
               day={weekDay.day}
               date={weekDay.date}
-              opacity={!weekDay.isToday && !weekDay.feelingType ? 0.5 : 1}
+              opacity={!isToday && !weekDay.feelingType ? 0.5 : 1}
               feelingType={weekDay.feelingType}
             />
           );
