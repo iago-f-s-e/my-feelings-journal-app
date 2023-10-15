@@ -7,6 +7,8 @@ import {
   Text,
   TextInput,
   TouchableOpacity,
+  KeyboardAvoidingView,
+  Platform,
 } from 'react-native';
 import {theme} from '@shared/styles';
 
@@ -29,7 +31,10 @@ export const SelfCareModal = ({
 
   return (
     <Modal visible={visible} transparent animationType="fade">
-      <View style={styles.container}>
+      <KeyboardAvoidingView
+        style={styles.container}
+        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+        keyboardVerticalOffset={Platform.OS === 'ios' ? 50 : 30}>
         <Pressable
           style={styles.backgroundButton}
           onPress={() => {
@@ -60,7 +65,7 @@ export const SelfCareModal = ({
             <Text style={styles.saveLabel}>SALVAR</Text>
           </TouchableOpacity>
         </View>
-      </View>
+      </KeyboardAvoidingView>
     </Modal>
   );
 };
@@ -77,6 +82,7 @@ const styles = StyleSheet.create({
   container: {
     alignItems: 'center',
     flex: 1,
+    justifyContent: 'center',
   },
   content: {
     alignItems: 'center',
@@ -84,7 +90,6 @@ const styles = StyleSheet.create({
     borderRadius: theme.spaces.l,
     borderWidth: 1,
     gap: theme.spaces.xll,
-    marginTop: theme.realHeight * 0.3,
     padding: theme.spaces.l,
     width: '90%',
   },
@@ -93,7 +98,6 @@ const styles = StyleSheet.create({
     gap: theme.spaces.xl,
     width: '100%',
   },
-
   descriptionInput: {
     backgroundColor: theme.colors.lightWhite,
     borderColor: theme.colors.lightDark,

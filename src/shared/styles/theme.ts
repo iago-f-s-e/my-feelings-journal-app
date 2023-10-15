@@ -35,6 +35,7 @@ const colors = {
   good: 'rgb(250, 247, 177)',
   goodDark: 'rgb(240, 237, 167)',
   goodLight: 'rgba(250, 247, 177, 0.25)',
+  paperBackground: 'rgb(255, 255, 225)',
 };
 
 const spaces = {
@@ -72,4 +73,5 @@ export const theme = {
   spaces,
   vp,
   realHeight,
+  SCREEN_WIDTH,
 };

@@ -21,17 +21,32 @@ type SelfCareActivitie = {
   normalColor: string;
 };
 
+type HappeningDiaryEvent = {
+  id: number;
+  title: string;
+  description: string;
+  feelingType: FeelingType;
+};
+
 export type Week = Record<string, WeekDay>;
 export type SelfCare = Record<string, SelfCareActivitie[]>;
+export type HappeningDiary = Record<string, HappeningDiaryEvent[]>;
 
 type UseWeekStore = {
   loading: boolean;
   keys: string[];
   week: Week;
   selfCare: SelfCare;
+  happeningDiary: HappeningDiary;
   updateCurrentWeek: () => void;
   updateToday: (date: string, feelingType: FeelingType) => void;
   createSelfCare: (date: string, description: string) => void;
+  createHappeningDiary: (
+    date: string,
+    title: string,
+    description: string,
+    feelingType: FeelingType,
+  ) => void;
 };
 
 function getWeekDay(dayIndex: number, feelingType?: FeelingType): WeekDay {
@@ -43,6 +58,18 @@ function getWeekDay(dayIndex: number, feelingType?: FeelingType): WeekDay {
     date: dayEntity.date(),
     feelingType,
   };
+}
+
+function getFeelingTypeOrder(feelingType: FeelingType): number {
+  const feelingTypes: Record<FeelingType, number> = {
+    VERY_GOOD: 1,
+    GOOD: 2,
+    NORMAL: 3,
+    BAD: 4,
+    VERY_BAD: 5,
+  };
+
+  return feelingTypes[feelingType];
 }
 
 const weekIndices = Array(7)
@@ -67,6 +94,18 @@ const initialSelfCare = weekIndices.reduce<SelfCare>((curr, dayIndex) => {
   return curr;
 }, {});
 
+const initialHappeningDiary = weekIndices.reduce<HappeningDiary>(
+  (curr, dayIndex) => {
+    const storeKey = timeHandlingWithLocale.day(dayIndex).format('YYYY-MM-DD');
+
+    // eslint-disable-next-line no-param-reassign
+    curr[storeKey] = [];
+
+    return curr;
+  },
+  {},
+);
+
 const initialKeys = Object.keys(initialWeek);
 
 export const useWeekStore = create(
@@ -75,6 +114,7 @@ export const useWeekStore = create(
       keys: initialKeys,
       week: initialWeek,
       selfCare: initialSelfCare,
+      happeningDiary: initialHappeningDiary,
       loading: false,
       createSelfCare: (date: string, description: string) => {
         const color = getRandomColor();
@@ -85,7 +125,7 @@ export const useWeekStore = create(
             [date]: [
               ...(state.selfCare[date] || []),
               {
-                id: (state.selfCare[date].length || 0) + 1,
+                id: (state.selfCare[date]?.length || 0) + 1,
                 darkColor: color.dark,
                 normalColor: color.normal,
                 description,
@@ -94,6 +134,34 @@ export const useWeekStore = create(
           },
         }));
       },
+
+      createHappeningDiary: (date, title, description, feelingType) => {
+        set(state => {
+          const happeningDiaryEvent: HappeningDiaryEvent = {
+            id: (state.selfCare[date]?.length || 0) + 1,
+            title,
+            description,
+            feelingType,
+          };
+
+          const happeningDiaryEvents = [
+            ...(state.happeningDiary[date] || []),
+            happeningDiaryEvent,
+          ].sort(
+            (prev, next) =>
+              getFeelingTypeOrder(prev.feelingType) -
+              getFeelingTypeOrder(next.feelingType),
+          );
+
+          return {
+            happeningDiary: {
+              ...state.happeningDiary,
+              [date]: happeningDiaryEvents,
+            },
+          };
+        });
+      },
+
       updateToday: (date: string, feelingType: FeelingType) => {
         set(state => ({
           week: {

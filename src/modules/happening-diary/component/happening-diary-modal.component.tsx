@@ -4,37 +4,42 @@ import {
   StyleSheet,
   Pressable,
   View,
-  TextInput,
   Text,
+  TextInput,
   TouchableOpacity,
   Animated,
   KeyboardAvoidingView,
   Platform,
 } from 'react-native';
-import {FeelingType} from '@shared/types';
 import {theme} from '@shared/styles';
+import {FeelingType} from '@shared/types';
 import {SelectFeelingType} from '@shared/components';
 
-type FeelingJournalModalProp = {
+type SelfCareModalProp = {
   visible: boolean;
   onClose: () => void;
-  onSave: (type: FeelingType, description?: string) => void;
+  onSave: (
+    title: string,
+    description: string,
+    fellingType: FeelingType,
+  ) => void;
 };
 
-export const FeelingJournalModal = ({
+export const HappeningDiaryModal = ({
   visible,
   onClose,
   onSave,
-}: FeelingJournalModalProp) => {
-  const [description, setDescription] = useState<string | null>(null);
+}: SelfCareModalProp) => {
   const [feelingType, setFeelingType] = useState<FeelingType | null>(null);
+  const [description, setDescription] = useState<string | null>(null);
+  const [title, setTitle] = useState<string | null>(null);
   const [animatedValue, setAnimatedValue] = useState<Animated.Value>(
-    new Animated.Value(theme.vp(35)),
+    new Animated.Value(theme.vp(45)),
   );
 
   const clearStates = () => {
     setDescription(null);
-    setFeelingType(null);
+    setTitle(null);
     setAnimatedValue(new Animated.Value(theme.vp(35)));
   };
 
@@ -52,40 +57,48 @@ export const FeelingJournalModal = ({
           }}
         />
         <View style={styles.content}>
-          <View style={styles.feelingTypeContainer}>
-            <Text style={styles.feelingTypeLabel}>
-              Como você se sentiu hoje?
-            </Text>
-            <SelectFeelingType
-              onSelect={type => setFeelingType(type)}
-              feelingType={feelingType as FeelingType}
-              animatedValue={animatedValue}
+          <Text style={styles.headerTitle}>Registro de Acontecimentos</Text>
+          <SelectFeelingType
+            onSelect={type => setFeelingType(type)}
+            feelingType={feelingType as FeelingType}
+            animatedValue={animatedValue}
+          />
+          <View style={styles.titleContainer}>
+            <Text style={styles.titleLabel}>Qual o titulo?</Text>
+            <TextInput
+              style={styles.titleInput}
+              multiline
+              placeholder="Ex: Caminhada matinal"
+              value={title ?? ''}
+              numberOfLines={1}
+              onChangeText={value => setTitle(value)}
             />
           </View>
-          <View style={styles.finish}>
-            <View style={styles.descriptionContainer}>
-              <Text style={styles.descriptionLabel}>
-                Pode nos contar como foi o seu dia?
-              </Text>
-              <TextInput
-                style={styles.descriptionInput}
-                multiline
-                placeholder="Descreva aqui..."
-                value={description ?? ''}
-                onChangeText={value => setDescription(value)}
-              />
-            </View>
-
-            <TouchableOpacity
-              disabled={!feelingType}
-              style={!feelingType ? styles.saveDisabled : styles.save}
-              onPress={() => {
-                onSave(feelingType as FeelingType, description as string);
-                clearStates();
-              }}>
-              <Text style={styles.saveLabel}>SALVAR</Text>
-            </TouchableOpacity>
+          <View style={styles.descriptionContainer}>
+            <Text style={styles.descriptionLabel}>
+              Vamos descrever um pouco melhor?
+            </Text>
+            <TextInput
+              style={styles.descriptionInput}
+              multiline
+              placeholder="Descreva aqui..."
+              value={description ?? ''}
+              onChangeText={value => setDescription(value)}
+            />
           </View>
+          <TouchableOpacity
+            disabled={!title?.trim().length}
+            style={!title?.trim().length ? styles.saveDisabled : styles.save}
+            onPress={() => {
+              onSave(
+                title as string,
+                description as string,
+                feelingType as FeelingType,
+              );
+              clearStates();
+            }}>
+            <Text style={styles.saveLabel}>SALVAR</Text>
+          </TouchableOpacity>
         </View>
       </KeyboardAvoidingView>
     </Modal>
@@ -107,6 +120,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   content: {
+    alignItems: 'center',
     backgroundColor: theme.colors.background,
     borderRadius: theme.spaces.l,
     borderWidth: 1,
@@ -115,8 +129,8 @@ const styles = StyleSheet.create({
     width: '90%',
   },
   descriptionContainer: {
-    alignItems: 'center',
-    gap: theme.spaces.xl,
+    alignItems: 'flex-start',
+    gap: theme.spaces.x,
     width: '100%',
   },
   descriptionInput: {
@@ -130,21 +144,13 @@ const styles = StyleSheet.create({
   },
   descriptionLabel: {
     color: theme.colors.darkGrey,
-    fontSize: theme.typography.size.small,
+    fontSize: theme.typography.size.verySmall,
     fontWeight: theme.typography.weight.semiBold,
   },
-  feelingTypeContainer: {
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  feelingTypeLabel: {
+  headerTitle: {
     color: theme.colors.darkGrey,
     fontSize: theme.typography.size.medium,
     fontWeight: theme.typography.weight.semiBold,
-  },
-  finish: {
-    alignItems: 'center',
-    gap: theme.spaces.xl,
   },
   save: {
     alignItems: 'center',
@@ -165,6 +171,24 @@ const styles = StyleSheet.create({
   },
   saveLabel: {
     color: theme.colors.background,
+    fontSize: theme.typography.size.verySmall,
+    fontWeight: theme.typography.weight.semiBold,
+  },
+  titleContainer: {
+    alignItems: 'flex-start',
+    gap: theme.spaces.x,
+    width: '100%',
+  },
+  titleInput: {
+    backgroundColor: theme.colors.lightWhite,
+    borderColor: theme.colors.lightDark,
+    borderWidth: 1,
+    padding: theme.spaces.x,
+    paddingHorizontal: theme.spaces.l,
+    width: '100%',
+  },
+  titleLabel: {
+    color: theme.colors.darkGrey,
     fontSize: theme.typography.size.verySmall,
     fontWeight: theme.typography.weight.semiBold,
   },

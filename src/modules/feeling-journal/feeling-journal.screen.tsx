@@ -1,8 +1,9 @@
 import React, {useEffect} from 'react';
-import {StyleSheet, View} from 'react-native';
+import {StyleSheet, View, ScrollView} from 'react-native';
 import {useWeekStore} from '@core/store/use-week-store';
 import {theme} from '@shared/styles';
 import {SelfCareActivitieContainer} from '@modules/self-care-activitie/containers';
+import {HappeningDiaryContainer} from '@modules/happening-diary/containers';
 import {CheckInContainer, HeaderContainer} from './containers';
 
 export const FeelingJournalScreen = () => {
@@ -13,11 +14,14 @@ export const FeelingJournalScreen = () => {
   }, [updateCurrentWeek]);
 
   return (
-    <View style={styles.container}>
+    <ScrollView style={styles.container}>
       <HeaderContainer />
       <CheckInContainer />
       <SelfCareActivitieContainer />
-    </View>
+      <View style={styles.footer}>
+        <HappeningDiaryContainer />
+      </View>
+    </ScrollView>
   );
 };
 
@@ -25,5 +29,9 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     gap: theme.spaces.l,
+    paddingBottom: theme.spaces.l,
+  },
+  footer: {
+    paddingBottom: theme.spaces.l,
   },
 });
