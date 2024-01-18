@@ -1,17 +1,17 @@
 import React, {useEffect} from 'react';
 import {StyleSheet, View, ScrollView} from 'react-native';
-import {useWeekStore} from '@core/store/use-week-store';
 import {theme} from '@shared/styles';
 import {SelfCareActivitieContainer} from '@modules/self-care-activitie/containers';
 import {HappeningDiaryContainer} from '@modules/happening-diary/containers';
+import {useUIStore} from '@core/store/use-ui-store';
 import {CheckInContainer, HeaderContainer} from './containers';
 
 export const FeelingJournalScreen = () => {
-  const updateCurrentWeek = useWeekStore(state => state.updateCurrentWeek);
+  const updateStores = useUIStore(state => state.updateStores);
 
   useEffect(() => {
-    updateCurrentWeek();
-  }, [updateCurrentWeek]);
+    updateStores();
+  }, [updateStores]);
 
   return (
     <ScrollView style={styles.container}>

@@ -1,33 +1,32 @@
 import React from 'react';
 import {View, FlatList, StyleSheet} from 'react-native';
 import {theme} from '@shared/styles';
-import {useWeekStore} from '@core/store/use-week-store';
 import {todayKey} from '@core/time-handling/time-handling';
 import {useUIStore} from '@core/store/use-ui-store';
+import {useSelfCareStore} from '@core/store/use-self-care-store';
 import {EmptySelfCare, SelfCarePostIt} from '../components';
 
 export const SelfCareActivitieListContainer = () => {
+  const openCreateModal = useUIStore(state => state.openCreateSelfCareModal);
   const openModal = useUIStore(state => state.openSelfCareModal);
-  const selfCareByDay = useWeekStore(state => state.selfCare);
+  const selfCareByDay = useSelfCareStore(state => state.selfCare)[todayKey];
 
-  return selfCareByDay[todayKey]?.length ? (
+  return selfCareByDay?.ids?.length ? (
     <FlatList
-      data={selfCareByDay[todayKey]}
+      data={selfCareByDay.ids}
       renderItem={({item}) => (
         <SelfCarePostIt
-          description={item.description}
-          darkColor={item.darkColor}
-          normalColor={item.normalColor}
+          selfCare={selfCareByDay.entities[item]}
+          onClick={selfCare => openModal(selfCare)}
         />
       )}
-      keyExtractor={item => item.id.toString()}
+      keyExtractor={selfCareId => selfCareId}
       horizontal
       showsHorizontalScrollIndicator={false}
       ItemSeparatorComponent={() => <View style={styles.separator} />}
-      ListEmptyComponent={() => <EmptySelfCare onCreateActivity={openModal} />}
     />
   ) : (
-    <EmptySelfCare onCreateActivity={openModal} />
+    <EmptySelfCare onCreateActivity={openCreateModal} />
   );
 };
 

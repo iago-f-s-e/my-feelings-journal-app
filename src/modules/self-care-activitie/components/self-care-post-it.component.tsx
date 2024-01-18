@@ -1,58 +1,31 @@
 import React from 'react';
 import {View, StyleSheet, Text} from 'react-native';
 import {theme} from '@shared/styles';
-import {getRandomColor} from '@shared/utils';
+import {SelfCareActivitie} from '@core/store/use-self-care-store/use-self-care-store';
+import {PostIt} from './post-it';
 
 type SelfCarePostItProp = {
-  description: string;
-  normalColor: string;
-  darkColor: string;
+  selfCare: SelfCareActivitie;
+  onClick: (selfCare: SelfCareActivitie) => void;
 };
 
-export const SelfCarePostIt = ({
-  description,
-  normalColor,
-  darkColor,
-}: SelfCarePostItProp) => {
+export const SelfCarePostIt = ({selfCare, onClick}: SelfCarePostItProp) => {
   return (
-    <View style={{...styles.container, backgroundColor: normalColor}}>
-      <View style={{...styles.bend, backgroundColor: darkColor}}>
-        <View style={styles.bendOutside} />
-      </View>
+    <PostIt
+      normalColor={selfCare.normalColor}
+      darkColor={selfCare.darkColor}
+      onClick={() => onClick(selfCare)}
+      size="normal">
       <View style={styles.content}>
         <Text style={styles.description} numberOfLines={6}>
-          {description}
+          {selfCare.description}
         </Text>
       </View>
-    </View>
+    </PostIt>
   );
 };
 
 const styles = StyleSheet.create({
-  bend: {
-    alignItems: 'flex-end',
-    borderBottomLeftRadius: theme.spaces.x,
-    height: theme.vp(30),
-    position: 'absolute',
-    right: 0,
-    top: 0,
-    width: theme.vp(30),
-  },
-  bendOutside: {
-    backgroundColor: theme.colors.background,
-    height: theme.vp(40),
-    right: theme.vp(-20),
-    top: theme.vp(-20),
-    transform: [{rotate: '45deg'}],
-    width: theme.vp(40),
-  },
-  container: {
-    borderRadius: theme.spaces.x,
-    height: theme.vp(150),
-    overflow: 'hidden',
-
-    width: theme.vp(200),
-  },
   content: {
     flex: 1,
     justifyContent: 'center',

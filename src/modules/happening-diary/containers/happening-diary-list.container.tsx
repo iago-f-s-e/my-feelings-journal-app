@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useMemo} from 'react';
 import {
   EmptyHappeningDiary,
   HappeningDiarySheep,
@@ -6,31 +6,41 @@ import {
 import {FlatList, StyleSheet} from 'react-native';
 import {FeelingType} from '@shared/types';
 import {theme} from '@shared/styles';
-import {useWeekStore} from '@core/store/use-week-store';
 import {todayKey} from '@core/time-handling';
 import {useUIStore} from '@core/store/use-ui-store';
+import {useHappeningDiaryStore} from '@core/store/user-happening-diary-store';
 
 export const HappeningDiaryListContainer = () => {
-  const openModal = useUIStore(state => state.openHappingDiaryModal);
-  const happeningDiaryByDay = useWeekStore(state => state.happeningDiary);
+  const openCreateModal = useUIStore(
+    state => state.openCreateHappingDiaryModal,
+  );
+  const happeningDiaryState = useHappeningDiaryStore(
+    state => state.happeningDiary,
+  );
 
-  return happeningDiaryByDay[todayKey]?.length ? (
+  const happeningDiaryByDay = useMemo(() => {
+    return happeningDiaryState[todayKey] || {};
+  }, [happeningDiaryState]);
+
+  return happeningDiaryByDay.ids?.length ? (
     <FlatList
       contentContainerStyle={styles.flatListContent}
-      data={happeningDiaryByDay[todayKey]}
+      data={happeningDiaryByDay.ids}
       horizontal
       showsHorizontalScrollIndicator={false}
       renderItem={({item}) => (
         <HappeningDiarySheep
-          title={item.title}
-          description={item.description}
-          feelingType={item.feelingType as FeelingType}
+          title={happeningDiaryByDay.entities[item].title}
+          description={happeningDiaryByDay.entities[item].description}
+          feelingType={
+            happeningDiaryByDay.entities[item].feelingType as FeelingType
+          }
         />
       )}
-      keyExtractor={item => item.id.toString()}
+      keyExtractor={item => item}
     />
   ) : (
-    <EmptyHappeningDiary onCreateActivity={openModal} />
+    <EmptyHappeningDiary onCreateActivity={openCreateModal} />
   );
 };
 

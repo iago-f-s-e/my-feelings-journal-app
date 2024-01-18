@@ -4,7 +4,7 @@ import {useUIStore} from '@core/store/use-ui-store';
 import {ContainerHeader} from '@shared/components';
 
 export const SelfCareActivitieHeaderContainer = () => {
-  const openModal = useUIStore(state => state.openSelfCareModal);
+  const openModal = useUIStore(state => state.openCreateSelfCareModal);
 
   return (
     <ContainerHeader

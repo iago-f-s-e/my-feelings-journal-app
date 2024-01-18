@@ -1,10 +1,10 @@
 import React, {useMemo} from 'react';
 import {StyleSheet, Pressable, View, Animated} from 'react-native';
 import {FeelingType} from '@shared/types';
-import {MoodIcon} from '@shared/components';
 import {theme} from '@shared/styles';
 import {StyleProp} from 'react-native/Libraries/StyleSheet/StyleSheet';
 import {ViewStyle} from 'react-native/Libraries/StyleSheet/StyleSheetTypes';
+import {MoodIcon} from './mood-icon';
 
 type FeelingJournalModalProp = {
   feelingType?: FeelingType;
@@ -18,11 +18,11 @@ export const SelectFeelingType = ({
   animatedValue,
 }: FeelingJournalModalProp) => {
   const feelingTypes: FeelingType[] = [
-    'VERY_BAD',
-    'BAD',
-    'NORMAL',
-    'GOOD',
     'VERY_GOOD',
+    'GOOD',
+    'NORMAL',
+    'BAD',
+    'VERY_BAD',
   ];
 
   const animatedStyle: StyleProp<ViewStyle> = useMemo(() => {

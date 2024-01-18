@@ -7,40 +7,26 @@ import {
   Text,
   TextInput,
   TouchableOpacity,
-  Animated,
   KeyboardAvoidingView,
   Platform,
 } from 'react-native';
 import {theme} from '@shared/styles';
-import {FeelingType} from '@shared/types';
-import {SelectFeelingType} from '@shared/components';
 
-type SelfCareModalProp = {
+type CreateSelfCareModalProp = {
   visible: boolean;
   onClose: () => void;
-  onSave: (
-    title: string,
-    description: string,
-    fellingType: FeelingType,
-  ) => void;
+  onSave: (description: string) => void;
 };
 
-export const HappeningDiaryModal = ({
+export const CreateSelfCareModal = ({
   visible,
   onClose,
   onSave,
-}: SelfCareModalProp) => {
-  const [feelingType, setFeelingType] = useState<FeelingType | null>(null);
+}: CreateSelfCareModalProp) => {
   const [description, setDescription] = useState<string | null>(null);
-  const [title, setTitle] = useState<string | null>(null);
-  const [animatedValue, setAnimatedValue] = useState<Animated.Value>(
-    new Animated.Value(theme.vp(45)),
-  );
 
   const clearStates = () => {
     setDescription(null);
-    setTitle(null);
-    setAnimatedValue(new Animated.Value(theme.vp(35)));
   };
 
   return (
@@ -57,27 +43,8 @@ export const HappeningDiaryModal = ({
           }}
         />
         <View style={styles.content}>
-          <Text style={styles.headerTitle}>Registro de Acontecimentos</Text>
-          <SelectFeelingType
-            onSelect={type => setFeelingType(type)}
-            feelingType={feelingType as FeelingType}
-            animatedValue={animatedValue}
-          />
-          <View style={styles.titleContainer}>
-            <Text style={styles.titleLabel}>Qual o titulo?</Text>
-            <TextInput
-              style={styles.titleInput}
-              multiline
-              placeholder="Ex: Caminhada matinal"
-              value={title ?? ''}
-              numberOfLines={1}
-              onChangeText={value => setTitle(value)}
-            />
-          </View>
           <View style={styles.descriptionContainer}>
-            <Text style={styles.descriptionLabel}>
-              Vamos descrever um pouco melhor?
-            </Text>
+            <Text style={styles.descriptionLabel}>O que faremos hoje?</Text>
             <TextInput
               style={styles.descriptionInput}
               multiline
@@ -87,14 +54,12 @@ export const HappeningDiaryModal = ({
             />
           </View>
           <TouchableOpacity
-            disabled={!title?.trim().length}
-            style={!title?.trim().length ? styles.saveDisabled : styles.save}
+            disabled={!description?.trim().length}
+            style={
+              !description?.trim().length ? styles.saveDisabled : styles.save
+            }
             onPress={() => {
-              onSave(
-                title as string,
-                description as string,
-                feelingType as FeelingType,
-              );
+              onSave(description as string);
               clearStates();
             }}>
             <Text style={styles.saveLabel}>SALVAR</Text>
@@ -129,8 +94,8 @@ const styles = StyleSheet.create({
     width: '90%',
   },
   descriptionContainer: {
-    alignItems: 'flex-start',
-    gap: theme.spaces.x,
+    alignItems: 'center',
+    gap: theme.spaces.xl,
     width: '100%',
   },
   descriptionInput: {
@@ -142,16 +107,13 @@ const styles = StyleSheet.create({
     textAlignVertical: 'top',
     width: '100%',
   },
+
   descriptionLabel: {
-    color: theme.colors.darkGrey,
-    fontSize: theme.typography.size.verySmall,
-    fontWeight: theme.typography.weight.semiBold,
-  },
-  headerTitle: {
     color: theme.colors.darkGrey,
     fontSize: theme.typography.size.medium,
     fontWeight: theme.typography.weight.semiBold,
   },
+
   save: {
     alignItems: 'center',
     backgroundColor: theme.colors.grey,
@@ -160,6 +122,7 @@ const styles = StyleSheet.create({
     padding: theme.spaces.l,
     width: '50%',
   },
+
   saveDisabled: {
     alignItems: 'center',
     backgroundColor: theme.colors.grey,
@@ -171,24 +134,6 @@ const styles = StyleSheet.create({
   },
   saveLabel: {
     color: theme.colors.background,
-    fontSize: theme.typography.size.verySmall,
-    fontWeight: theme.typography.weight.semiBold,
-  },
-  titleContainer: {
-    alignItems: 'flex-start',
-    gap: theme.spaces.x,
-    width: '100%',
-  },
-  titleInput: {
-    backgroundColor: theme.colors.lightWhite,
-    borderColor: theme.colors.lightDark,
-    borderWidth: 1,
-    padding: theme.spaces.x,
-    paddingHorizontal: theme.spaces.l,
-    width: '100%',
-  },
-  titleLabel: {
-    color: theme.colors.darkGrey,
     fontSize: theme.typography.size.verySmall,
     fontWeight: theme.typography.weight.semiBold,
   },

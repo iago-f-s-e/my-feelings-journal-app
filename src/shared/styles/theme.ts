@@ -22,6 +22,7 @@ const colors = {
   secondaryBackground: '#CCCCCC',
   lightWhite: '#FFFFFF',
   lightDark: '#00000040',
+  transparent: 'rgba(0,0,0,0)',
   veryBad: 'rgb(215, 177, 238)',
   veryBadLight: 'rgba(215, 177, 238, 0.25)',
   veryGood: 'rgb(186, 251, 192)',
